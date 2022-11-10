@@ -30,5 +30,9 @@ Using the default settings, this allows for 4096 unique IDs to be generated ever
 |10000  | 7ms  |
 |100000 | 90ms |
 
+TODO
+[] Improve random alphanum ns/op
+
 ## Reference
 https://betterprogramming.pub/implementing-snowflake-algorithm-in-golang-c1098fdc73d0
+https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
