@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"sync"
 	"time"
 )
@@ -93,8 +94,8 @@ func main() {
 	defer timer("main function")()
 
 	w := NewWorker(5, 5)
-	ch := make(chan uint64, 100000)
-	count := 100000
+	ch := make(chan string, 5000)
+	count := 5000
 	wg.Add(count)
 	defer close(ch)
 	// Concurrently count goroutines for snowFlake ID generation
@@ -102,11 +103,22 @@ func main() {
 		go func() {
 			defer wg.Done()
 			id, _ := w.NextID()
-			ch <- id
+
+			rand.Seed(int64(id))
+
+			var letters = []byte("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+			lenCode := 8
+			b := make([]byte, lenCode)
+			for i := range b {
+				b[i] = letters[rand.Int63()%int64(len(letters))]
+			}
+
+			ch <- string(b)
 		}()
 	}
 	wg.Wait()
-	m := make(map[uint64]int)
+	m := make(map[string]int)
 	for i := 0; i < count; i++ {
 		id := <-ch
 		// If there is a key with id in the map, it means that the generated snowflake ID is duplicated
